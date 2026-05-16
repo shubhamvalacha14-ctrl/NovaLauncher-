@@ -50,7 +50,7 @@ configurations {
 }
 
 android {
-    namespace 'git.artdeell.mojo'
+    namespace 'com.launch.nova'
 
     compileSdk = 36
 
@@ -66,21 +66,21 @@ android {
             keyPassword "android"
         }
         googlePlayBuild {
-            storeFile file("mojo_upload.jks")
+            storeFile file("nova_upload.jks")
             storePassword System.getenv("UPLOAD_KEYSTORE_PASSWORD")
             keyAlias "key0"
             keyPassword System.getenv("UPLOAD_KEYSTORE_PASSWORD")
         }
         publicBuild {
-            storeFile file("mojo_pub.jks")
-            storePassword System.getenv("MOJOPUB_KEYSTORE_PASSWORD")
+            storeFile file("nova_me.jks")
+            storePassword System.getenv("NOVAME_KEYSTORE_PASSWORD")
             keyAlias "key0"
-            keyPassword System.getenv("MOJOPUB_KEYSTORE_PASSWORD")
+            keyPassword System.getenv("NOVAME_KEYSTORE_PASSWORD")
         }
     }
 
     defaultConfig {
-        applicationId "git.artdeell.mojo"
+        applicationId "com.launch.nova"
         minSdkVersion 21
         targetSdkVersion 36
         versionCode getDateSeconds()
@@ -109,8 +109,8 @@ android {
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.customDebug
-            resValue 'string', 'application_package', 'git.artdeell.mojo.debug'
-            resValue 'string', 'storageProviderAuthorities', 'git.artdeell.mojo.scoped.gamefolder.debug'
+            resValue 'string', 'application_package', 'com.launch.nova.debug'
+            resValue 'string', 'storageProviderAuthorities', 'com.launch.nova.scoped.gamefolder.debug'
         }
         proguard {
             initWith debug
@@ -129,8 +129,8 @@ android {
             // defaultConfig already set
             // multiDexEnabled = true
             // debuggable = true
-            resValue 'string', 'storageProviderAuthorities', 'git.artdeell.mojo.scoped.gamefolder'
-            resValue 'string', 'application_package', 'git.artdeell.mojo'
+            resValue 'string', 'storageProviderAuthorities', 'com.launch.nova.scoped.gamefolder'
+            resValue 'string', 'application_package', 'com.launch.nova'
         }
         gplay {
             initWith release
@@ -140,8 +140,8 @@ android {
             initWith release
             signingConfig signingConfigs.customDebug // WIP, changeme
             applicationIdSuffix '.pub'
-            resValue 'string', 'storageProviderAuthorities', 'git.artdeell.mojo.pub.scoped.gamefolder'
-            resValue 'string', 'application_package', 'git.artdeell.mojo.pub'
+            resValue 'string', 'storageProviderAuthorities', 'com.launch.nova.me.scoped.gamefolder'
+            resValue 'string', 'application_package', 'com.launch.nova.me'
         }
     }
 

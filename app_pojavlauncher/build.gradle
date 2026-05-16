@@ -50,7 +50,7 @@ configurations {
 }
 
 android {
-    namespace 'com.launch.nova'
+        namespace 'git.artdeell.mojo'
 
     compileSdk = 36
 

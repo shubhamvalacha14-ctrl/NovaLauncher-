@@ -34,8 +34,8 @@
 				android:gravity="center"
 				android:padding="12dp"
 				android:text="@string/mcl_tab_wiki"
-				android:drawableTop="@drawable/ic_px_book"
-				android:drawableStart="@tools:sample/backgrounds/scenic" />
+				android:drawableTop="@drawable/ic_px_book"/>
+				
 
 			<com.kdt.mcgui.LauncherMenuButton
 				android:id="@+id/social_media_button"

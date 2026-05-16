@@ -99,7 +99,7 @@
 		</LinearLayout>
 	</HorizontalScrollView>
 
-		<com.kdt.mcgui.McVersionSpinner
+	<com.kdt.mcgui.mcVersionSpinner
 		android:id="@+id/mc_version_spinner"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

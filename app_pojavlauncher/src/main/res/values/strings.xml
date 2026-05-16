@@ -482,4 +482,6 @@
     <string name="instance_delete">Delete instance</string>
     <string name="instance_delete_confirmation">Are you sure you want to delete the instance? This will permanently delete all worlds, mods, resources and any other data in the instance directory. This action cannot be undone!</string>
     <string name="import_local_modpack">Import local modpack</string>
+    <color name="icon_outline_color">#FFD700</color>
+    <string name="auth_select_elyby">Login with Ely.by</string>
 </resources>

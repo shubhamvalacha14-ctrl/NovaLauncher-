@@ -34,8 +34,7 @@
 				android:gravity="center"
 				android:padding="12dp"
 				android:text="@string/mcl_tab_wiki"
-				android:drawableTop="@drawable/ic_px_book"/>
-				
+				android:drawableTop="@drawable/ic_px_book" />
 
 			<com.kdt.mcgui.LauncherMenuButton
 				android:id="@+id/social_media_button"
@@ -107,8 +106,9 @@
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />
-        	<ImageButton
-		android:id="@+id/launcher_settings_button"
+
+	<ImageButton
+		android:id="@+id/edit_profile_button"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:visibility="gone"
@@ -116,15 +116,12 @@
 		app:layout_constraintTop_toTopOf="parent"
 		tools:ignore="ContentDescription" />
 
-	<ImageButton
-		android:id="@+id/launcher_alt_settings_button"
+	<Button
+		android:id="@+id/play_button"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:visibility="gone"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		tools:ignore="ContentDescription" />
-	
-	
+		app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

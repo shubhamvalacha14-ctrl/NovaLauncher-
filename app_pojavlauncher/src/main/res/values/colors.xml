@@ -10,4 +10,5 @@
     <color name="background_bottom_bar">#000000</color>
     <color name="primary_text">#FFFFFF</color>
     <color name="secondary_text">#FFD700</color>
+    <color name="icon_outline_color">#FFD700</color>
 </resources>

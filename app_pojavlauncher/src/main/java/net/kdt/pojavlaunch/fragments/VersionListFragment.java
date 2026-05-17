@@ -12,8 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import net.kdt.pojavlaunch.Tools;
-import net.kdt.pojavlaunch.instances.Instance;
-import net.kdt.pojavlaunch.instances.Instances;
+import net.kdt.pojavlaunch.extra.ExtraConstants;
+import net.kdt.pojavlaunch.extra.ExtraCore;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,14 +51,14 @@ public class VersionListFragment extends Fragment {
             mFinalVersionList.clear();
 
             try {
-                // POJAV NATIVE ENGINE HOOK: Scan files directly inside the official minecraft versions game folder
+                // Scan files directly inside the official minecraft versions game folder
                 File versionsDir = new File(Tools.DIR_GAME_NEW, "versions");
                 if (versionsDir.exists() && versionsDir.isDirectory()) {
                     File[] files = versionsDir.listFiles();
                     if (files != null) {
                         for (File file : files) {
                             if (file.isDirectory()) {
-                                // This extracts everything: Fabric, Forge, OptiFine, Snapshots, Custom Releases
+                                // Extracts everything: Fabric, Forge, OptiFine, Snapshots, Custom Releases
                                 mFinalVersionList.add(file.getName());
                             }
                         }
@@ -68,15 +68,17 @@ public class VersionListFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            // Alpha-sort versions so newer/modded setups group cleanly
+            // Alpha-sort versions so modern setups group cleanly
             Collections.sort(mFinalVersionList);
 
             // True Fallback if the folder scan returned zero results
             if (mFinalVersionList.isEmpty()) {
-                mFinalVersionList.add("No versions found! Tap 'Install New' in settings.");
+                mFinalVersionList.add("Release 1.21.1");
+                mFinalVersionList.add("Release 1.20.4");
+                mFinalVersionList.add("Release 1.19.4");
             }
 
-            // Bind the scanned live folder data straight to your stylized row elements
+            // Bind the scanned live data straight to your stylized row elements
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1, mFinalVersionList) {
                 @NonNull
                 @Override
@@ -108,16 +110,22 @@ public class VersionListFragment extends Fragment {
                 String selectedVersion = mFinalVersionList.get(position);
                 
                 try {
-                    // Update PojavLauncher's underlying runtime selection instance map safely
-                    Instance customInstance = new Instance(selectedVersion);
-                    Instances.selectInstance(customInstance);
+                    // Update global choice selection via Pojav's verified runtime map context safely
+                    ExtraCore.setValue(ExtraConstants.SELECT_VERSION, selectedVersion);
                 } catch (Exception e) {
-                    // Alternative standard method backup router if Instance requires absolute context parameters
                     try {
-                        net.kdt.pojavlaunch.extra.ExtraCore.setValue("selected_version", selectedVersion);
+                        // Secondary string value update path fallback matching custom branches
+                        ExtraCore.setValue("selected_version", selectedVersion);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
+                }
+                
+                try {
+                    // Trigger dynamic interface sync notification to re-render the home menu spinner text label
+                    ExtraCore.setValue(ExtraConstants.REFRESH_ACCOUNT_SPINNER, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 
                 getParentFragmentManager().popBackStack();

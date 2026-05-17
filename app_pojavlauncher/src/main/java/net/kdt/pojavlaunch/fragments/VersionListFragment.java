@@ -63,7 +63,7 @@ public class VersionListFragment extends Fragment {
                     TextView text = row.findViewById(android.R.id.text1);
                     if (text != null) {
                         text.setTextColor(android.graphics.Color.WHITE);
-                        text.setTextSize(13sp);
+                        text.setTextSize(13);
                         text.setPadding(16, 16, 16, 16);
                     }
                     row.setBackgroundResource(requireContext().getResources().getIdentifier("rounded_card_bg", "drawable", requireContext().getPackageName()));

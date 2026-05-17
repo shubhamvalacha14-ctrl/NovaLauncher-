@@ -51,39 +51,11 @@ public class MainMenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // =================================================================
-        // 1. WINDOW TREE SWEEP: FORCE-HIDE OLD TOP-BAR & YELLOW LINE
+        // 1. CLEAN CONTENT ARCHITECTURE RE-ALIGNMENT
         // =================================================================
         try {
-            // Access the running activity's master display layer layout
-            ViewGroup rootLayout = (ViewGroup) requireActivity().getWindow().getDecorView().getRootView();
-            
-            // Loop through structural container elements to kill header views bleeding into fragments
-            for (int i = 0; i < rootLayout.getChildCount(); i++) {
-                View child = rootLayout.getChildAt(i);
-                if (child != null && (child.getClass().getName().contains("ConstraintLayout") || child.getClass().getName().contains("RelativeLayout"))) {
-                    int checkHeaderId = requireContext().getResources().getIdentifier("main_header_layout", "id", requireContext().getPackageName());
-                    View innerHeader = child.findViewById(checkHeaderId);
-                    if (innerHeader != null) {
-                        innerHeader.setVisibility(View.GONE);
-                    }
-                }
-            }
-
-            // Fallback direct pointer wipe to wipe the old text elements and line bars cleanly
-            String[] stubbornViews = {
-                "main_header_layout", 
-                "top_bar", 
-                "account_header", 
-                "add_account_layout", 
-                "add_account_text", 
-                "yellow_line_separator"
-            };
-            for (String targetId : stubbornViews) {
-                int resId = requireContext().getResources().getIdentifier(targetId, "id", requireContext().getPackageName());
-                View targetView = requireActivity().findViewById(resId);
-                if (targetView != null) {
-                    targetView.setVisibility(View.GONE);
-                }
+            if (view != null) {
+                view.setFitsSystemWindows(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,22 +68,22 @@ public class MainMenuFragment extends Fragment {
         mVersionSpinner = view.findViewById(R.id.mc_version_spinner);
         View mGearSettingsButton = view.findViewById(R.id.edit_profile_button);
 
-        // Game Launch Engine Hook
+        // Core Game Launch Execution Engine Hook
         if (mPlayButton != null) {
             mPlayButton.setOnClickListener(v -> ExtraCore.setValue(ExtraConstants.LAUNCH_GAME, true));
         }
 
-        // Tapping the version dropdown box goes straight to our custom full-screen list fragment
+        // Tapping the custom version select panel goes straight to your full-screen menu fragment
         if (mVersionSpinner != null) {
             mVersionSpinner.setOnClickListener(v -> triggerVersionFragmentTransaction());
         }
 
-        // Tapping the top right gear settings button now also safely routes into our clean fragment list!
+        // Tapping the layout gear settings button also routes into our clean fragment list!
         if (mGearSettingsButton != null) {
             mGearSettingsButton.setOnClickListener(v -> triggerVersionFragmentTransaction());
         }
 
-        // Tapping the main version sidebar card box routes into the version selector sheet layout frame
+        // Tapping the secondary layout version block routes into the version selector sheet layout frame
         int accountBoxId = requireContext().getResources().getIdentifier("account_center_block", "id", requireContext().getPackageName());
         View accountDock = view.findViewById(accountBoxId);
         if (accountDock != null) {
@@ -119,22 +91,22 @@ public class MainMenuFragment extends Fragment {
         }
 
         // =================================================================
-        // 3. NEW SIDEBAR "ADD ACCOUNT" ACTION FUNCTIONAL INTERFACE
+        // 3. SIDEBAR "ADD ACCOUNT" LINK OPERATION FUNCTIONAL INTERFACE
         // =================================================================
         try {
-            // Dynamically hooks your new sidebar layout "Add Account" selection button
-            int sidebarAddAccountId = requireContext().getResources().getIdentifier("add_account_card", "id", requireContext().getPackageName());
+            // Target your customized sidebar add account click block element card dynamically
+            int sidebarAddAccountId = requireContext().getResources().getIdentifier("add_account", "id", requireContext().getPackageName());
             View sidebarAddAccountBtn = view.findViewById(sidebarAddAccountId);
             
             if (sidebarAddAccountBtn == null) {
-                // Secondary check for text-layer click variants
-                int altAddAccountId = requireContext().getResources().getIdentifier("add_account", "id", requireContext().getPackageName());
+                // Secondary backup check for button layout target names
+                int altAddAccountId = requireContext().getResources().getIdentifier("add_account_card", "id", requireContext().getPackageName());
                 sidebarAddAccountBtn = view.findViewById(altAddAccountId);
             }
 
             if (sidebarAddAccountBtn != null && mVersionSpinner != null) {
                 sidebarAddAccountBtn.setOnClickListener(v -> {
-                    // Triggers Pojav's official, native login prompt manager window seamlessly
+                    // Instantly fires up Pojav's official, native account profile editor login wizard!
                     mVersionSpinner.openProfileEditor(requireActivity());
                 });
             }
@@ -143,7 +115,7 @@ public class MainMenuFragment extends Fragment {
         }
     }
 
-    /** Fragment transaction helper routing task to swap layout sheets cleanly */
+    /** Fragment transaction transaction manager helper script to swap launcher sheets cleanly */
     private void triggerVersionFragmentTransaction() {
         try {
             int mainContainerId = requireContext().getResources().getIdentifier(

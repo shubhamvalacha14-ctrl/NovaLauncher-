@@ -63,8 +63,23 @@ public class MainMenuFragment extends Fragment {
         mDiscordButton.setOnClickListener(v -> Tools.openURL(requireActivity(), getString(R.string.social_media_invite)));
         mCustomControlButton.setOnClickListener(v -> startActivity(new Intent(requireContext(), CustomControlsActivity.class)));
         mInstallJarButton.setOnClickListener(v -> runInstallerWithConfirmation());
-        mEditProfileButton.setOnClickListener(v -> mVersionSpinner.openProfileEditor(requireActivity()));
-
+                // Zalith Premium Slide-in Settings Panel Transaction
+        android.view.View settingsButton = view.findViewById(R.id.edit_profile_button); // Uses your top layout wheel icon
+        if (settingsButton != null) {
+            settingsButton.setOnClickListener(v -> {
+                getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(
+                        android.R.anim.slide_in_left,  // Settings panel slides in from the edge
+                        android.R.anim.fade_out,       // Main menu fades back smoothly
+                        android.R.anim.fade_in,        // Main menu fades back in on close
+                        android.R.anim.slide_out_right // Settings panel slides away back off-screen
+                    )
+                    .replace(R.id.fragment_menu_main, new SettingsFragment())
+                    .addToBackStack(null)
+                    .commit();
+            });
+        }
+        
         mPlayButton.setOnClickListener(v -> ExtraCore.setValue(ExtraConstants.LAUNCH_GAME, true));
 
         mShareLogsButton.setOnClickListener((v) -> shareLog(requireContext()));

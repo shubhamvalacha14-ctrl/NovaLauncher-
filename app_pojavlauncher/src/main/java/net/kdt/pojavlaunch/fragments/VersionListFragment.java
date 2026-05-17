@@ -11,8 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.extra.ExtraCore;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class VersionListFragment extends Fragment {
@@ -31,84 +35,72 @@ public class VersionListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Header back navigation button click router
+        // Header back navigation button click handler
         int backBtnId = requireContext().getResources().getIdentifier("btn_back_versions", "id", requireContext().getPackageName());
         View backButton = view.findViewById(backBtnId);
         if (backButton != null) {
             backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
         }
 
-        // Target the layout's dynamic ListView element
+        // Target the layout's dynamic ListView component
         int listId = requireContext().getResources().getIdentifier("version_list_render", "id", requireContext().getPackageName());
         ListView listView = view.findViewById(listId);
 
         if (listView != null) {
             mFinalVersionList.clear();
 
+            try {
+                // SYSTEM FILE SCANNER: Directly inspects the official minecraft versions game folder
+                File versionsDir = new File(Tools.DIR_GAME_NEW, "versions");
+                if (versionsDir.exists() && versionsDir.isDirectory()) {
+                    File[] files = versionsDir.listFiles();
+                    if (files != null) {
+                        for (File file : files) {
+                            if (file.isDirectory()) {
+                                // Dynamically extracts downloaded releases, mod-loaders, or snapshots
+                                mFinalVersionList.add(file.getName());
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Alpha-sort any found local folder configurations to keep custom setups grouped neatly
+            Collections.sort(mFinalVersionList);
+
             // =================================================================
-            // MASTER DATABASE: ALL MOD-LOADERS, RELEASES, SNAPSHOTS, & PACKS
+            // PREMIUM DEFAULT MANIFEST MAP (IF NO LOCAL VERSIONS ARE INSTALLED)
             // =================================================================
-            
-            // 1. FABRIC MOD-LOADER ENGINE OPTIONS
-            mFinalVersionList.add("Fabric 1.21.1");
-            mFinalVersionList.add("Fabric 1.20.4");
-            mFinalVersionList.add("Fabric 1.20.1");
-            mFinalVersionList.add("Fabric 1.19.2");
-            mFinalVersionList.add("Fabric 1.18.2");
-            mFinalVersionList.add("Fabric 1.16.5");
+            if (mFinalVersionList.isEmpty()) {
+                // Displays your exact custom sidebar fallback requirements out-of-the-box!
+                mFinalVersionList.add("No installed versions");
+                
+                // 1. FABRIC MOD-LOADER ENGINES
+                mFinalVersionList.add("Fabric 1.21.1");
+                mFinalVersionList.add("Fabric 1.20.1");
+                mFinalVersionList.add("Fabric 1.16.5");
+                
+                // 2. FORGE MOD-LOADER ENGINES
+                mFinalVersionList.add("Forge 1.21.1");
+                mFinalVersionList.add("Forge 1.20.1");
+                mFinalVersionList.add("Forge 1.16.5");
+                mFinalVersionList.add("Forge 1.12.2");
+                
+                // 3. OPTIFINE STANDALONE ENGINES
+                mFinalVersionList.add("OptiFine 1.21");
+                mFinalVersionList.add("OptiFine 1.20.4");
+                mFinalVersionList.add("OptiFine 1.12.2");
+                
+                // 4. VANILLA RELEASES & SNAPSHOTS
+                mFinalVersionList.add("1.21.1 (Latest Release)");
+                mFinalVersionList.add("1.20.4");
+                mFinalVersionList.add("Snapshot 24w14a");
+                mFinalVersionList.add("1.8.9");
+            }
 
-            // 2. FORGE MOD-LOADER ENGINE OPTIONS
-            mFinalVersionList.add("Forge 1.21.1");
-            mFinalVersionList.add("Forge 1.20.1");
-            mFinalVersionList.add("Forge 1.19.2");
-            mFinalVersionList.add("Forge 1.18.2");
-            mFinalVersionList.add("Forge 1.16.5");
-            mFinalVersionList.add("Forge 1.12.2");
-            mFinalVersionList.add("Forge 1.8.9");
-            mFinalVersionList.add("Forge 1.7.10");
-
-            // 3. OPTIFINE STANDALONE ENGINE OPTIONS
-            mFinalVersionList.add("OptiFine 1.21");
-            mFinalVersionList.add("OptiFine 1.20.4");
-            mFinalVersionList.add("OptiFine 1.20.1");
-            mFinalVersionList.add("OptiFine 1.19.4");
-            mFinalVersionList.add("OptiFine 1.16.5");
-            mFinalVersionList.add("OptiFine 1.12.2");
-            mFinalVersionList.add("OptiFine 1.8.9");
-
-            // 4. POPULAR MODPACK RUNTIME SEMANTICS
-            mFinalVersionList.add("Modpack: Cobblemon [Fabric]");
-            mFinalVersionList.add("Modpack: Better Minecraft 1.20.1");
-            mFinalVersionList.add("Modpack: RL Craft 1.12.2");
-            mFinalVersionList.add("Modpack: Pixelmon Reforged");
-
-            // 5. RECENT VANILLA RELEASES
-            mFinalVersionList.add("1.21.1 (Latest Release)");
-            mFinalVersionList.add("1.21");
-            mFinalVersionList.add("1.20.6");
-            mFinalVersionList.add("1.20.4");
-            mFinalVersionList.add("1.20.2");
-            mFinalVersionList.add("1.20.1");
-            mFinalVersionList.add("1.19.4");
-            mFinalVersionList.add("1.19.2");
-            mFinalVersionList.add("1.18.2");
-            mFinalVersionList.add("1.17.1");
-
-            // 6. SNAPSHOTS & EXPERIMENTAL BUILDS
-            mFinalVersionList.add("Snapshot 24w14a");
-            mFinalVersionList.add("Snapshot 23w45a");
-            mFinalVersionList.add("Snapshot 1.21-pre1");
-            mFinalVersionList.add("Combat Test 8c");
-
-            // 7. LEGACY & GOLDEN AGE CLASSICS
-            mFinalVersionList.add("1.16.5");
-            mFinalVersionList.add("1.12.2");
-            mFinalVersionList.add("1.8.9");
-            mFinalVersionList.add("1.7.10");
-            mFinalVersionList.add("Alpha v1.2.6");
-            mFinalVersionList.add("Beta 1.7.3");
-
-            // Bind this entire combined master list to your custom layout list views
+            // Bind the scanned or default database array to your custom row layouts
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1, mFinalVersionList) {
                 @NonNull
                 @Override
@@ -120,7 +112,7 @@ public class VersionListFragment extends Fragment {
                         String name = mFinalVersionList.get(position);
                         text.setText(name);
                         text.setTextColor(android.graphics.Color.WHITE);
-                        text.setTextSize(13f);
+                        text.setTextSize(13f); // Strict float notation formatting to bypass compiler parsing rules
                         text.setPadding(32, 40, 32, 40);
                     }
                     
@@ -139,7 +131,12 @@ public class VersionListFragment extends Fragment {
             listView.setOnItemClickListener((parent1, view1, position, id) -> {
                 String selectedVersion = mFinalVersionList.get(position);
                 
-                // Parse and strip clean tags out if a user picks a tagged option
+                // Do nothing if the user accidentally taps the "No installed versions" banner line
+                if (selectedVersion.equalsIgnoreCase("No installed versions")) {
+                    return;
+                }
+                
+                // Standardize custom descriptive string text formats into clean engine IDs
                 if (selectedVersion.contains(" (")) {
                     selectedVersion = selectedVersion.split(" \\(")[0];
                 } else if (selectedVersion.startsWith("Fabric ")) {
@@ -151,8 +148,14 @@ public class VersionListFragment extends Fragment {
                 }
 
                 try {
-                    // Inject selection directly back into core configuration context values
+                    // Inject choices directly back into core configuration data contexts using universally compliant strings
                     ExtraCore.setValue("selected_version", selectedVersion);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                
+                try {
+                    // Force a core visual notification repaint to update the main menu spinner label text fields
                     ExtraCore.setValue("refresh_version", true);
                 } catch (Exception e) {
                     e.printStackTrace();

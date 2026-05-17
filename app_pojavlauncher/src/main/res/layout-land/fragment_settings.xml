@@ -32,7 +32,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_close"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
             android:contentDescription="Close"
             android:tint="#FFFFFF" />
     </RelativeLayout>
@@ -66,7 +66,7 @@
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/ic_video"
+                    android:src="@android:drawable/ic_menu_slideshow"
                     android:tint="#E0E0E0" />
                 
                 <LinearLayout

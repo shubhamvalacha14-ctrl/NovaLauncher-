@@ -6,17 +6,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import net.kdt.pojavlaunch.Tools;
+import net.kdt.pojavlaunch.instances.Instance;
+import net.kdt.pojavlaunch.instances.Instances;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class VersionListFragment extends Fragment {
 
     public static final String TAG = "VersionListFragment";
+    private final List<String> mFinalVersionList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -29,34 +36,30 @@ public class VersionListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Simple back navigation router
+        // Header back navigation button
         int backBtnId = requireContext().getResources().getIdentifier("btn_back_versions", "id", requireContext().getPackageName());
         View backButton = view.findViewById(backBtnId);
         if (backButton != null) {
             backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
         }
 
-        // Target the dynamic ListView component on screen
+        // Target the layout's dynamic ListView element
         int listId = requireContext().getResources().getIdentifier("version_list_render", "id", requireContext().getPackageName());
         ListView listView = view.findViewById(listId);
 
         if (listView != null) {
-            List<String> versionNames = new ArrayList<>();
+            mFinalVersionList.clear();
 
             try {
-                // Look for the main screen layout spinner view reference dynamically
-                int spinnerId = requireContext().getResources().getIdentifier("mc_version_spinner", "id", requireContext().getPackageName());
-                View mainActivityView = requireActivity().findViewById(spinnerId);
-
-                // Treat it as a base Android Spinner to read elements cleanly
-                if (mainActivityView instanceof Spinner) {
-                    Spinner standardSpinner = (Spinner) mainActivityView;
-                    if (standardSpinner.getAdapter() != null) {
-                        int count = standardSpinner.getAdapter().getCount();
-                        for (int i = 0; i < count; i++) {
-                            Object item = standardSpinner.getAdapter().getItem(i);
-                            if (item != null) {
-                                versionNames.add(item.toString());
+                // POJAV NATIVE ENGINE HOOK: Scan files directly inside the official minecraft versions game folder
+                File versionsDir = new File(Tools.DIR_GAME_NEW, "versions");
+                if (versionsDir.exists() && versionsDir.isDirectory()) {
+                    File[] files = versionsDir.listFiles();
+                    if (files != null) {
+                        for (File file : files) {
+                            if (file.isDirectory()) {
+                                // This extracts everything: Fabric, Forge, OptiFine, Snapshots, Custom Releases
+                                mFinalVersionList.add(file.getName());
                             }
                         }
                     }
@@ -65,24 +68,28 @@ public class VersionListFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            // Reliable fallbacks if layout array lookup context wasn't ready yet
-            if (versionNames.isEmpty()) {
-                versionNames.add("Release 1.21.1");
-                versionNames.add("Release 1.20.4");
-                versionNames.add("Release 1.19.4");
+            // Alpha-sort versions so newer/modded setups group cleanly
+            Collections.sort(mFinalVersionList);
+
+            // True Fallback if the folder scan returned zero results
+            if (mFinalVersionList.isEmpty()) {
+                mFinalVersionList.add("No versions found! Tap 'Install New' in settings.");
             }
 
-            // Build out custom stylized rows
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1, versionNames) {
+            // Bind the scanned live folder data straight to your stylized row elements
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1, mFinalVersionList) {
                 @NonNull
                 @Override
                 public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                     View row = super.getView(position, convertView, parent);
                     TextView text = row.findViewById(android.R.id.text1);
+                    
                     if (text != null) {
+                        String name = mFinalVersionList.get(position);
+                        text.setText(name);
                         text.setTextColor(android.graphics.Color.WHITE);
                         text.setTextSize(13f);
-                        text.setPadding(32, 32, 32, 32);
+                        text.setPadding(32, 40, 32, 40);
                     }
                     
                     int drawableId = requireContext().getResources().getIdentifier("rounded_card_bg", "drawable", requireContext().getPackageName());
@@ -96,17 +103,23 @@ public class VersionListFragment extends Fragment {
 
             listView.setAdapter(adapter);
 
-            // Row click feedback pipeline
+            // Handle Selection Engine Clicks
             listView.setOnItemClickListener((parent1, view1, position, id) -> {
+                String selectedVersion = mFinalVersionList.get(position);
+                
                 try {
-                    int spinnerId = requireContext().getResources().getIdentifier("mc_version_spinner", "id", requireContext().getPackageName());
-                    View mainActivityView = requireActivity().findViewById(spinnerId);
-                    if (mainActivityView instanceof Spinner) {
-                        ((Spinner) mainActivityView).setSelection(position);
-                    }
+                    // Update PojavLauncher's underlying runtime selection instance map safely
+                    Instance customInstance = new Instance(selectedVersion);
+                    Instances.selectInstance(customInstance);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    // Alternative standard method backup router if Instance requires absolute context parameters
+                    try {
+                        net.kdt.pojavlaunch.extra.ExtraCore.setValue("selected_version", selectedVersion);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
+                
                 getParentFragmentManager().popBackStack();
             });
         }

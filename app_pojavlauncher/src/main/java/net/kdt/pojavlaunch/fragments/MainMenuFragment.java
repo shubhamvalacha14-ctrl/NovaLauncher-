@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -50,14 +51,26 @@ public class MainMenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // =================================================================
-        // 1. TOTAL BANISHMENT OF THE OLD YELLOW LINE, TEXTS, AND HEADERS
+        // 1. WINDOW TREE SWEEP: FORCE-HIDE OLD TOP-BAR & YELLOW LINE
         // =================================================================
         try {
-            // Target the root display view frame context of the active running application window
-            View rootDecorView = requireActivity().getWindow().getDecorView();
+            // Access the running activity's master display layer layout
+            ViewGroup rootLayout = (ViewGroup) requireActivity().getWindow().getDecorView().getRootView();
             
-            // Comprehensive array targeting all old header views, lines, and account layout widgets
-            String[] stubbornViewsList = {
+            // Loop through structural container elements to kill header views bleeding into fragments
+            for (int i = 0; i < rootLayout.getChildCount(); i++) {
+                View child = rootLayout.getChildAt(i);
+                if (child != null && (child.getClass().getName().contains("ConstraintLayout") || child.getClass().getName().contains("RelativeLayout"))) {
+                    int checkHeaderId = requireContext().getResources().getIdentifier("main_header_layout", "id", requireContext().getPackageName());
+                    View innerHeader = child.findViewById(checkHeaderId);
+                    if (innerHeader != null) {
+                        innerHeader.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            // Fallback direct pointer wipe to wipe the old text elements and line bars cleanly
+            String[] stubbornViews = {
                 "main_header_layout", 
                 "top_bar", 
                 "account_header", 
@@ -65,20 +78,11 @@ public class MainMenuFragment extends Fragment {
                 "add_account_text", 
                 "yellow_line_separator"
             };
-            
-            // Loop through each element ID string, resolve its resource pointer, and turn visibility off completely
-            for (String targetElementId : stubbornViewsList) {
-                int resolvedResourceId = requireContext().getResources().getIdentifier(
-                    targetElementId, 
-                    "id", 
-                    requireContext().getPackageName()
-                );
-                
-                if (resolvedResourceId != 0) {
-                    View stubbornViewInstance = rootDecorView.findViewById(resolvedResourceId);
-                    if (stubbornViewInstance != null) {
-                        stubbornViewInstance.setVisibility(View.GONE);
-                    }
+            for (String targetId : stubbornViews) {
+                int resId = requireContext().getResources().getIdentifier(targetId, "id", requireContext().getPackageName());
+                View targetView = requireActivity().findViewById(resId);
+                if (targetView != null) {
+                    targetView.setVisibility(View.GONE);
                 }
             }
         } catch (Exception e) {
@@ -86,44 +90,63 @@ public class MainMenuFragment extends Fragment {
         }
 
         // =================================================================
-        // 2. CORE COMPONENT INITIALIZATION & ACTION ROUTING
+        // 2. CORE COMPONENT INITIALIZATION & INTERACTION ROUTING
         // =================================================================
         Button mPlayButton = view.findViewById(R.id.play_button);
         mVersionSpinner = view.findViewById(R.id.mc_version_spinner);
-        
-        // Target your top right layout gear settings wheel view button context reference
         View mGearSettingsButton = view.findViewById(R.id.edit_profile_button);
 
-        // Core Minecraft Launch Thread Bind
+        // Game Launch Engine Hook
         if (mPlayButton != null) {
             mPlayButton.setOnClickListener(v -> ExtraCore.setValue(ExtraConstants.LAUNCH_GAME, true));
         }
 
-        // Tapping the version dropdown container switches directly to our premium version screen fragment
+        // Tapping the version dropdown box goes straight to our custom full-screen list fragment
         if (mVersionSpinner != null) {
             mVersionSpinner.setOnClickListener(v -> triggerVersionFragmentTransaction());
         }
 
-        // REDIRECTION FIX: Tapping the top right gear button now safely routes into our clean fragment layout!
+        // Tapping the top right gear settings button now also safely routes into our clean fragment list!
         if (mGearSettingsButton != null) {
             mGearSettingsButton.setOnClickListener(v -> triggerVersionFragmentTransaction());
         }
 
-        // Direct account profile dashboard block interaction map routing link
+        // Tapping the main version sidebar card box routes into the version selector sheet layout frame
         int accountBoxId = requireContext().getResources().getIdentifier("account_center_block", "id", requireContext().getPackageName());
         View accountDock = view.findViewById(accountBoxId);
         if (accountDock != null) {
-            accountDock.setOnClickListener(v -> {
-                // Completely bypasses the old accordion editor page window popup context frames!
-                triggerVersionFragmentTransaction();
-            });
+            accountDock.setOnClickListener(v -> triggerVersionFragmentTransaction());
+        }
+
+        // =================================================================
+        // 3. NEW SIDEBAR "ADD ACCOUNT" ACTION FUNCTIONAL INTERFACE
+        // =================================================================
+        try {
+            // Dynamically hooks your new sidebar layout "Add Account" selection button
+            int sidebarAddAccountId = requireContext().getResources().getIdentifier("add_account_card", "id", requireContext().getPackageName());
+            View sidebarAddAccountBtn = view.findViewById(sidebarAddAccountId);
+            
+            if (sidebarAddAccountBtn == null) {
+                // Secondary check for text-layer click variants
+                int altAddAccountId = requireContext().getResources().getIdentifier("add_account", "id", requireContext().getPackageName());
+                sidebarAddAccountBtn = view.findViewById(altAddAccountId);
+            }
+
+            if (sidebarAddAccountBtn != null && mVersionSpinner != null) {
+                sidebarAddAccountBtn.setOnClickListener(v -> {
+                    // Triggers Pojav's official, native login prompt manager window seamlessly
+                    mVersionSpinner.openProfileEditor(requireActivity());
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    /** Helper routing method to execute clean fragment transitions safely across your touch areas */
+    /** Fragment transaction helper routing task to swap layout sheets cleanly */
     private void triggerVersionFragmentTransaction() {
         try {
-            int mainLayoutContainerId = requireContext().getResources().getIdentifier(
+            int mainContainerId = requireContext().getResources().getIdentifier(
                 "fragment_menu_main", 
                 "id", 
                 requireContext().getPackageName()
@@ -136,7 +159,7 @@ public class MainMenuFragment extends Fragment {
                     android.R.anim.fade_in,
                     android.R.anim.fade_out
                 )
-                .replace(mainLayoutContainerId, new VersionListFragment())
+                .replace(mainContainerId, new VersionListFragment())
                 .addToBackStack(null)
                 .commit();
         } catch (Exception e) {

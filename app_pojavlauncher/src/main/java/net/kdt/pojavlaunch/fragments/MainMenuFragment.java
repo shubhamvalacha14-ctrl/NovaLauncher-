@@ -76,6 +76,33 @@ public class MainMenuFragment extends Fragment {
             Tools.swapFragment(requireActivity(), GamepadMapperFragment.class, GamepadMapperFragment.TAG, null);
             return true;
         });
+           // Smooth Card Scaling & Fade Animation Engine
+        try {
+            android.widget.LinearLayout cardRow = (android.widget.LinearLayout) mNewsButton.getParent();
+            android.widget.HorizontalScrollView mainScroller = (android.widget.HorizontalScrollView) cardRow.getParent();
+
+            mainScroller.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                int centerX = mainScroller.getWidth() / 2 + scrollX;
+
+                for (int i = 0; i < cardRow.getChildCount(); i++) {
+                    android.view.View card = cardRow.getChildAt(i);
+                    int cardCenterX = card.getLeft() + card.getWidth() / 2;
+                    int distance = Math.abs(centerX - cardCenterX);
+
+                    // Dynamically scale down items based on screen distance from center
+                    float scale = 1.0f - Math.min(0.15f, (float) distance / mainScroller.getWidth());
+                    
+                    card.setScaleX(scale);
+                    card.setScaleY(scale);
+                    
+                    // Create a smooth alpha fade for off-center tiles
+                    card.setAlpha(0.5f + 0.5f * (scale - 0.85f) / 0.15f); 
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
     }
 
     private void openGameDirectory(Context context) {

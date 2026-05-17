@@ -12,8 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import net.kdt.pojavlaunch.extra.ExtraCore;
-
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,39 +45,70 @@ public class VersionListFragment extends Fragment {
         if (listView != null) {
             mFinalVersionList.clear();
 
-            try {
-                // INTERNAL REFLECTION ENGINE: GRAB POJAV'S ENTIRE BUILT-IN VERSION MANIFEST
-                Class<?> versionUtilsClass = Class.forName("net.kdt.pojavlaunch.utils.VersionUtils");
-                Method getVersionsMethod = versionUtilsClass.getMethod("getDownloadableVersions");
-                
-                // This pulls the entire default manifest: All Vanilla Releases, Snapshots, and Alphas
-                List<?> officialVersions = (List<?>) getVersionsMethod.invoke(null);
-                
-                if (officialVersions != null) {
-                    for (Object versionObj : officialVersions) {
-                        mFinalVersionList.add(versionObj.toString());
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            // =================================================================
+            // MASTER DATABASE: ALL MOD-LOADERS, RELEASES, SNAPSHOTS, & PACKS
+            // =================================================================
+            
+            // 1. FABRIC MOD-LOADER ENGINE OPTIONS
+            mFinalVersionList.add("Fabric 1.21.1");
+            mFinalVersionList.add("Fabric 1.20.4");
+            mFinalVersionList.add("Fabric 1.20.1");
+            mFinalVersionList.add("Fabric 1.19.2");
+            mFinalVersionList.add("Fabric 1.18.2");
+            mFinalVersionList.add("Fabric 1.16.5");
 
-            // FALLBACK SYSTEM: If manifestation fetch fails, populate standard release manifests dynamically
-            if (mFinalVersionList.isEmpty()) {
-                mFinalVersionList.add("1.21.1 (Latest Release)");
-                mFinalVersionList.add("1.21");
-                mFinalVersionList.add("1.20.6");
-                mFinalVersionList.add("1.20.4");
-                mFinalVersionList.add("1.20.1");
-                mFinalVersionList.add("1.19.4");
-                mFinalVersionList.add("1.18.2");
-                mFinalVersionList.add("1.17.1");
-                mFinalVersionList.add("1.16.5");
-                mFinalVersionList.add("1.12.2");
-                mFinalVersionList.add("24w14a (Snapshot)");
-            }
+            // 2. FORGE MOD-LOADER ENGINE OPTIONS
+            mFinalVersionList.add("Forge 1.21.1");
+            mFinalVersionList.add("Forge 1.20.1");
+            mFinalVersionList.add("Forge 1.19.2");
+            mFinalVersionList.add("Forge 1.18.2");
+            mFinalVersionList.add("Forge 1.16.5");
+            mFinalVersionList.add("Forge 1.12.2");
+            mFinalVersionList.add("Forge 1.8.9");
+            mFinalVersionList.add("Forge 1.7.10");
 
-            // Bind the massive manifest list array to your stylized layout template rows
+            // 3. OPTIFINE STANDALONE ENGINE OPTIONS
+            mFinalVersionList.add("OptiFine 1.21");
+            mFinalVersionList.add("OptiFine 1.20.4");
+            mFinalVersionList.add("OptiFine 1.20.1");
+            mFinalVersionList.add("OptiFine 1.19.4");
+            mFinalVersionList.add("OptiFine 1.16.5");
+            mFinalVersionList.add("OptiFine 1.12.2");
+            mFinalVersionList.add("OptiFine 1.8.9");
+
+            // 4. POPULAR MODPACK RUNTIME SEMANTICS
+            mFinalVersionList.add("Modpack: Cobblemon [Fabric]");
+            mFinalVersionList.add("Modpack: Better Minecraft 1.20.1");
+            mFinalVersionList.add("Modpack: RL Craft 1.12.2");
+            mFinalVersionList.add("Modpack: Pixelmon Reforged");
+
+            // 5. RECENT VANILLA RELEASES
+            mFinalVersionList.add("1.21.1 (Latest Release)");
+            mFinalVersionList.add("1.21");
+            mFinalVersionList.add("1.20.6");
+            mFinalVersionList.add("1.20.4");
+            mFinalVersionList.add("1.20.2");
+            mFinalVersionList.add("1.20.1");
+            mFinalVersionList.add("1.19.4");
+            mFinalVersionList.add("1.19.2");
+            mFinalVersionList.add("1.18.2");
+            mFinalVersionList.add("1.17.1");
+
+            // 6. SNAPSHOTS & EXPERIMENTAL BUILDS
+            mFinalVersionList.add("Snapshot 24w14a");
+            mFinalVersionList.add("Snapshot 23w45a");
+            mFinalVersionList.add("Snapshot 1.21-pre1");
+            mFinalVersionList.add("Combat Test 8c");
+
+            // 7. LEGACY & GOLDEN AGE CLASSICS
+            mFinalVersionList.add("1.16.5");
+            mFinalVersionList.add("1.12.2");
+            mFinalVersionList.add("1.8.9");
+            mFinalVersionList.add("1.7.10");
+            mFinalVersionList.add("Alpha v1.2.6");
+            mFinalVersionList.add("Beta 1.7.3");
+
+            // Bind this entire combined master list to your custom layout list views
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1, mFinalVersionList) {
                 @NonNull
                 @Override
@@ -110,13 +139,19 @@ public class VersionListFragment extends Fragment {
             listView.setOnItemClickListener((parent1, view1, position, id) -> {
                 String selectedVersion = mFinalVersionList.get(position);
                 
-                // Strip description tags text if present to save pure version id string strings
-                if (selectedVersion.contains(" ")) {
-                    selectedVersion = selectedVersion.split(" ")[0];
+                // Parse and strip clean tags out if a user picks a tagged option
+                if (selectedVersion.contains(" (")) {
+                    selectedVersion = selectedVersion.split(" \\(")[0];
+                } else if (selectedVersion.startsWith("Fabric ")) {
+                    selectedVersion = selectedVersion.replace("Fabric ", "fabric-");
+                } else if (selectedVersion.startsWith("Forge ")) {
+                    selectedVersion = selectedVersion.replace("Forge ", "forge-");
+                } else if (selectedVersion.startsWith("OptiFine ")) {
+                    selectedVersion = selectedVersion.replace("OptiFine ", "optifine-");
                 }
 
                 try {
-                    // Saves the selection straight to core configuration engine context registers
+                    // Inject selection directly back into core configuration context values
                     ExtraCore.setValue("selected_version", selectedVersion);
                     ExtraCore.setValue("refresh_version", true);
                 } catch (Exception e) {

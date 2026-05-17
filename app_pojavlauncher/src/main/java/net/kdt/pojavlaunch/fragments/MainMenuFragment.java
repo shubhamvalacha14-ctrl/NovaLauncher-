@@ -48,16 +48,33 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
+
+        // ==========================================
+        // 1. RUNTIME TOP HEADER REMOVAL (CRITICAL FIX)
+        // ==========================================
+        try {
+            // Hunts down and destroys the stubborn top navigation action bar overlay container at runtime
+            int topHeaderId = requireContext().getResources().getIdentifier("main_header_layout", "id", requireContext().getPackageName());
+            View topHeader = requireActivity().findViewById(topHeaderId);
+            if (topHeader != null) {
+                topHeader.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // ==========================================
+        // 2. VIEW BINDINGS & CLICK ROUTERS
+        // ==========================================
         Button mPlayButton = view.findViewById(R.id.play_button);
         mVersionSpinner = view.findViewById(R.id.mc_version_spinner);
 
-        // Standard Launch Engine Bind
+        // Core Game Engine Launch Execution
         if (mPlayButton != null) {
             mPlayButton.setOnClickListener(v -> ExtraCore.setValue(ExtraConstants.LAUNCH_GAME, true));
         }
 
-        // Zalith Full-Screen Version Selection Screen Trigger
+        // Dynamic Full-Screen Version List Sheet Transition Override
         if (mVersionSpinner != null) {
             mVersionSpinner.setOnClickListener(v -> {
                 getParentFragmentManager().beginTransaction()
@@ -73,11 +90,14 @@ public class MainMenuFragment extends Fragment {
             });
         }
 
-        // Setup the Account Dashboard Interaction Link
+        // Clean Account Card Center Dashboard Execution
         int accountBoxId = requireContext().getResources().getIdentifier("account_center_block", "id", requireContext().getPackageName());
         View accountDock = view.findViewById(accountBoxId);
         if (accountDock != null && mVersionSpinner != null) {
-            accountDock.setOnClickListener(v -> mVersionSpinner.openProfileEditor(requireActivity()));
+            accountDock.setOnClickListener(v -> {
+                // Instantly requests the core engine to show the native account profiles selector layout modal
+                mVersionSpinner.openProfileEditor(requireActivity());
+            });
         }
     }
 

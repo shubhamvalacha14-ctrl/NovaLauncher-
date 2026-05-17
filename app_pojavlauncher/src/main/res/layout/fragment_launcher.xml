@@ -6,7 +6,8 @@
 	android:id="@+id/fragment_menu_main"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:background="#121212">
+	android:background="#121212"
+	android:animateLayoutChanges="true">
 
 	<HorizontalScrollView
 		android:layout_width="match_parent"
@@ -28,9 +29,9 @@
 				android:layout_width="140dp"
 				android:layout_height="140dp"
 				android:layout_marginEnd="16dp"
-				app:cardBackgroundColor="#1F1F1F"
-				app:cardCornerRadius="20dp"
-				app:cardElevation="4dp">
+				android:cardBackgroundColor="#1F1F1F"
+				android:cardCornerRadius="20dp"
+				android:cardElevation="4dp">
 				<com.kdt.mcgui.LauncherMenuButton
 					android:id="@+id/news_button"
 					style="@style/LauncherMenuButton.Universal"
@@ -47,9 +48,9 @@
 				android:layout_width="140dp"
 				android:layout_height="140dp"
 				android:layout_marginEnd="16dp"
-				app:cardBackgroundColor="#1F1F1F"
-				app:cardCornerRadius="20dp"
-				app:cardElevation="4dp">
+				android:cardBackgroundColor="#1F1F1F"
+				android:cardCornerRadius="20dp"
+				android:cardElevation="4dp">
 				<com.kdt.mcgui.LauncherMenuButton
 					android:id="@+id/social_media_button"
 					style="@style/LauncherMenuButton.Universal"
@@ -66,9 +67,9 @@
 				android:layout_width="140dp"
 				android:layout_height="140dp"
 				android:layout_marginEnd="16dp"
-				app:cardBackgroundColor="#1F1F1F"
-				app:cardCornerRadius="20dp"
-				app:cardElevation="4dp">
+				android:cardBackgroundColor="#1F1F1F"
+				android:cardCornerRadius="20dp"
+				android:cardElevation="4dp">
 				<com.kdt.mcgui.LauncherMenuButton
 					android:id="@+id/custom_control_button"
 					style="@style/LauncherMenuButton.Universal"
@@ -85,9 +86,9 @@
 				android:layout_width="140dp"
 				android:layout_height="140dp"
 				android:layout_marginEnd="16dp"
-				app:cardBackgroundColor="#1F1F1F"
-				app:cardCornerRadius="20dp"
-				app:cardElevation="4dp">
+				android:cardBackgroundColor="#1F1F1F"
+				android:cardCornerRadius="20dp"
+				android:cardElevation="4dp">
 				<com.kdt.mcgui.LauncherMenuButton
 					android:id="@+id/install_jar_button"
 					style="@style/LauncherMenuButton.Universal"
@@ -104,9 +105,9 @@
 				android:layout_width="140dp"
 				android:layout_height="140dp"
 				android:layout_marginEnd="16dp"
-				app:cardBackgroundColor="#1F1F1F"
-				app:cardCornerRadius="20dp"
-				app:cardElevation="4dp">
+				android:cardBackgroundColor="#1F1F1F"
+				android:cardCornerRadius="20dp"
+				android:cardElevation="4dp">
 				<com.kdt.mcgui.LauncherMenuButton
 					android:id="@+id/share_logs_button"
 					style="@style/LauncherMenuButton.Universal"
@@ -122,9 +123,9 @@
 			<androidx.cardview.widget.CardView
 				android:layout_width="140dp"
 				android:layout_height="140dp"
-				app:cardBackgroundColor="#1F1F1F"
-				app:cardCornerRadius="20dp"
-				app:cardElevation="4dp">
+				android:cardBackgroundColor="#1F1F1F"
+				android:cardCornerRadius="20dp"
+				android:cardElevation="4dp">
 				<com.kdt.mcgui.LauncherMenuButton
 					android:id="@+id/open_files_button"
 					style="@style/LauncherMenuButton.Universal"
@@ -145,9 +146,9 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_margin="24dp"
-		app:cardBackgroundColor="#1F1F1F"
-		app:cardCornerRadius="16dp"
-		app:cardElevation="6dp"
+		android:cardBackgroundColor="#1F1F1F"
+		android:cardCornerRadius="16dp"
+		android:cardElevation="6dp"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintEnd_toEndOf="parent">

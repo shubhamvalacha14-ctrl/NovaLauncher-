@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import com.kdt.mcgui.mcVersionSpinner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,29 +29,35 @@ public class VersionListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Back navigation controller
+        // Simple back navigation router
         int backBtnId = requireContext().getResources().getIdentifier("btn_back_versions", "id", requireContext().getPackageName());
         View backButton = view.findViewById(backBtnId);
         if (backButton != null) {
             backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
         }
 
-        // Target the dynamic UI list container
+        // Target the dynamic ListView component on screen
         int listId = requireContext().getResources().getIdentifier("version_list_render", "id", requireContext().getPackageName());
         ListView listView = view.findViewById(listId);
 
         if (listView != null) {
-            // SAFE EXTRACTION: Dynamically poll the Spinner's integrated live array adapter data
             List<String> versionNames = new ArrayList<>();
-            mcVersionSpinner referenceSpinner = new mcVersionSpinner(requireContext());
-            
+
             try {
-                if (referenceSpinner.getAdapter() != null) {
-                    int count = referenceSpinner.getAdapter().getCount();
-                    for (int i = 0; i < count; i++) {
-                        Object item = referenceSpinner.getAdapter().getItem(i);
-                        if (item != null) {
-                            versionNames.add(item.toString());
+                // Look for the main screen layout spinner view reference dynamically
+                int spinnerId = requireContext().getResources().getIdentifier("mc_version_spinner", "id", requireContext().getPackageName());
+                View mainActivityView = requireActivity().findViewById(spinnerId);
+
+                // Treat it as a base Android Spinner to read elements cleanly
+                if (mainActivityView instanceof Spinner) {
+                    Spinner standardSpinner = (Spinner) mainActivityView;
+                    if (standardSpinner.getAdapter() != null) {
+                        int count = standardSpinner.getAdapter().getCount();
+                        for (int i = 0; i < count; i++) {
+                            Object item = standardSpinner.getAdapter().getItem(i);
+                            if (item != null) {
+                                versionNames.add(item.toString());
+                            }
                         }
                     }
                 }
@@ -59,14 +65,14 @@ public class VersionListFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            // Fallback row if no local versions are verified yet
+            // Reliable fallbacks if layout array lookup context wasn't ready yet
             if (versionNames.isEmpty()) {
                 versionNames.add("Release 1.21.1");
                 versionNames.add("Release 1.20.4");
                 versionNames.add("Release 1.19.4");
             }
 
-            // Render live custom rows with correct layout styles
+            // Build out custom stylized rows
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1, versionNames) {
                 @NonNull
                 @Override
@@ -75,7 +81,7 @@ public class VersionListFragment extends Fragment {
                     TextView text = row.findViewById(android.R.id.text1);
                     if (text != null) {
                         text.setTextColor(android.graphics.Color.WHITE);
-                        text.setTextSize(13f); // Fixed syntax unit issue safely
+                        text.setTextSize(13f);
                         text.setPadding(32, 32, 32, 32);
                     }
                     
@@ -90,15 +96,13 @@ public class VersionListFragment extends Fragment {
 
             listView.setAdapter(adapter);
 
-            // Handle selection clicks perfectly
+            // Row click feedback pipeline
             listView.setOnItemClickListener((parent1, view1, position, id) -> {
                 try {
-                    // Update global choice index directly via the verified core element selector
-                    mcVersionSpinner mainSpinner = requireActivity().findViewById(
-                        requireContext().getResources().getIdentifier("mc_version_spinner", "id", requireContext().getPackageName())
-                    );
-                    if (mainSpinner != null) {
-                        mainSpinner.setSelection(position);
+                    int spinnerId = requireContext().getResources().getIdentifier("mc_version_spinner", "id", requireContext().getPackageName());
+                    View mainActivityView = requireActivity().findViewById(spinnerId);
+                    if (mainActivityView instanceof Spinner) {
+                        ((Spinner) mainActivityView).setSelection(position);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

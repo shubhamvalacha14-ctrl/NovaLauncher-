@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121316"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/settings_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings - Renderer"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#1C1D21"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Global Renderer"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="The default global renderer uses a dynamic library translation layer to ensure the game runs smoothly on mobile devices."
+                    android:textColor="#8A8D98"
+                    android:textSize="11sp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <RadioGroup
+                    android:id="@+id/renderer_radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/radio_krypton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Krypton Wrapper"
+                        android:textColor="#FFFFFF"
+                        android:buttonTint="#7A91FF"
+                        android:textSize="13sp"
+                        android:padding="10dp"/>
+
+                    <RadioButton
+                        android:id="@+id/radio_gl4es"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="GL4ES\nMC Version Support: &lt;= 1.21.4"
+                        android:textColor="#FFFFFF"
+                        android:buttonTint="#7A91FF"
+                        android:textSize="13sp"
+                        android:padding="10dp"/>
+
+                    <RadioButton
+                        android:id="@+id/radio_zink"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Vulkan Zink"
+                        android:textColor="#FFFFFF"
+                        android:buttonTint="#7A91FF"
+                        android:textSize="13sp"
+                        android:padding="10dp"/>
+                </RadioGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#1C1D21"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vulkan Driver"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <RadioGroup
+                    android:id="@+id/vulkan_radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp">
+
+                    <RadioButton
+                        android:id="@+id/radio_turnip"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Turnip"
+                        android:textColor="#FFFFFF"
+                        android:buttonTint="#7A91FF"
+                        android:textSize="13sp"
+                        android:padding="10dp"/>
+                </RadioGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#1C1D21"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Memory Allocation"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Adjust Minecraft's runtime RAM memory usage parameters."
+                    android:textColor="#8A8D98"
+                    android:textSize="11sp"
+                    android:layout_marginTop="4dp"/>
+
+                <TextView
+                    android:id="@+id/memory_allocated_display"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Allocated: 3159 MB"
+                    android:textColor="#7A91FF"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="12dp"/>
+
+                <SeekBar
+                    android:id="@+id/settings_memory_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:max="10238"
+                    android:progress="3159"
+                    android:thumbTint="#7A91FF"
+                    android:progressTint="#7A91FF"
+                    android:progressBackgroundTint="#3A3B40"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

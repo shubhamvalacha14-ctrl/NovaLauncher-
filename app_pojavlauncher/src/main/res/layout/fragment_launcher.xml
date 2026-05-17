@@ -27,7 +27,6 @@
 
 			<com.kdt.mcgui.LauncherMenuButton
 				android:id="@+id/news_button"
-				style="@style/LauncherMenuButton.Universal"
 				android:layout_width="140dp"
 				android:layout_height="140dp"
 				android:layout_marginEnd="16dp"
@@ -39,7 +38,6 @@
 
 			<com.kdt.mcgui.LauncherMenuButton
 				android:id="@+id/social_media_button"
-				style="@style/LauncherMenuButton.Universal"
 				android:layout_width="140dp"
 				android:layout_height="140dp"
 				android:layout_marginEnd="16dp"
@@ -51,7 +49,6 @@
 
 			<com.kdt.mcgui.LauncherMenuButton
 				android:id="@+id/custom_control_button"
-				style="@style/LauncherMenuButton.Universal"
 				android:layout_width="140dp"
 				android:layout_height="140dp"
 				android:layout_marginEnd="16dp"
@@ -63,7 +60,6 @@
 
 			<com.kdt.mcgui.LauncherMenuButton
 				android:id="@+id/install_jar_button"
-				style="@style/LauncherMenuButton.Universal"
 				android:layout_width="140dp"
 				android:layout_height="140dp"
 				android:layout_marginEnd="16dp"
@@ -75,7 +71,6 @@
 
 			<com.kdt.mcgui.LauncherMenuButton
 				android:id="@+id/share_logs_button"
-				style="@style/LauncherMenuButton.Universal"
 				android:layout_width="140dp"
 				android:layout_height="140dp"
 				android:layout_marginEnd="16dp"
@@ -87,7 +82,6 @@
 
 			<com.kdt.mcgui.LauncherMenuButton
 				android:id="@+id/open_files_button"
-				style="@style/LauncherMenuButton.Universal"
 				android:layout_width="140dp"
 				android:layout_height="140dp"
 				android:background="@drawable/rounded_card_bg"

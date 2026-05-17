@@ -47,6 +47,8 @@ public class MainMenuFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        
         Button mPlayButton = view.findViewById(R.id.play_button);
         mVersionSpinner = view.findViewById(R.id.mc_version_spinner);
 
@@ -57,7 +59,6 @@ public class MainMenuFragment extends Fragment {
 
         // Zalith Full-Screen Version Selection Screen Trigger
         if (mVersionSpinner != null) {
-            // Overrides traditional spinner behavior to use your premium micro-text layout sheet
             mVersionSpinner.setOnClickListener(v -> {
                 getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(
@@ -72,15 +73,13 @@ public class MainMenuFragment extends Fragment {
             });
         }
 
-                // Setup the Account Dashboard Interaction Link
+        // Setup the Account Dashboard Interaction Link
         int accountBoxId = requireContext().getResources().getIdentifier("account_center_block", "id", requireContext().getPackageName());
         View accountDock = view.findViewById(accountBoxId);
         if (accountDock != null && mVersionSpinner != null) {
-            accountDock.setOnClickListener(v -> {
-                // Safely triggers the launcher's built-in account profile editor popup window
-                mVersionSpinner.openProfileEditor(requireActivity());
-            });
+            accountDock.setOnClickListener(v -> mVersionSpinner.openProfileEditor(requireActivity()));
         }
+    }
 
     private void openGameDirectory(Context context) {
         Instance instance = Instances.loadSelectedInstance();

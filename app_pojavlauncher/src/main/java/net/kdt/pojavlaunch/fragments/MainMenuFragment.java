@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -48,76 +47,40 @@ public class MainMenuFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Button mNewsButton = view.findViewById(R.id.news_button);
-        Button mDiscordButton = view.findViewById(R.id.social_media_button);
-        Button mCustomControlButton = view.findViewById(R.id.custom_control_button);
-        Button mInstallJarButton = view.findViewById(R.id.install_jar_button);
-        Button mShareLogsButton = view.findViewById(R.id.share_logs_button);
-        Button mOpenDirectoryButton = view.findViewById(R.id.open_files_button);
-
-        ImageButton mEditProfileButton = view.findViewById(R.id.edit_profile_button);
         Button mPlayButton = view.findViewById(R.id.play_button);
         mVersionSpinner = view.findViewById(R.id.mc_version_spinner);
 
-        mNewsButton.setOnClickListener(v -> Tools.openURL(requireActivity(), Tools.URL_HOME));
-        mDiscordButton.setOnClickListener(v -> Tools.openURL(requireActivity(), getString(R.string.social_media_invite)));
-        mCustomControlButton.setOnClickListener(v -> startActivity(new Intent(requireContext(), CustomControlsActivity.class)));
-        mInstallJarButton.setOnClickListener(v -> runInstallerWithConfirmation());
-                // Zalith Premium Slide-in Settings Panel Transaction
-        android.view.View settingsButton = view.findViewById(R.id.edit_profile_button); // Uses your top layout wheel icon
-        if (settingsButton != null) {
-            settingsButton.setOnClickListener(v -> {
+        // Standard Launch Engine Bind
+        if (mPlayButton != null) {
+            mPlayButton.setOnClickListener(v -> ExtraCore.setValue(ExtraConstants.LAUNCH_GAME, true));
+        }
+
+        // Zalith Full-Screen Version Selection Screen Trigger
+        if (mVersionSpinner != null) {
+            // Overrides traditional spinner behavior to use your premium micro-text layout sheet
+            mVersionSpinner.setOnClickListener(v -> {
                 getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(
-                        android.R.anim.slide_in_left,  // Settings panel slides in from the edge
-                        android.R.anim.fade_out,       // Main menu fades back smoothly
-                        android.R.anim.fade_in,        // Main menu fades back in on close
-                        android.R.anim.slide_out_right // Settings panel slides away back off-screen
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out,
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
                     )
-                    .replace(R.id.fragment_menu_main, new SettingsFragment())
+                    .replace(R.id.fragment_menu_main, new VersionListFragment())
                     .addToBackStack(null)
                     .commit();
             });
         }
-        
-        mPlayButton.setOnClickListener(v -> ExtraCore.setValue(ExtraConstants.LAUNCH_GAME, true));
 
-        mShareLogsButton.setOnClickListener((v) -> shareLog(requireContext()));
-
-        mOpenDirectoryButton.setOnClickListener((v)-> openGameDirectory(v.getContext()));
-
-
-        mNewsButton.setOnLongClickListener((v)->{
-            Tools.swapFragment(requireActivity(), GamepadMapperFragment.class, GamepadMapperFragment.TAG, null);
-            return true;
-        });
-           // Smooth Card Scaling & Fade Animation Engine
-        try {
-            android.widget.LinearLayout cardRow = (android.widget.LinearLayout) mNewsButton.getParent();
-            android.widget.HorizontalScrollView mainScroller = (android.widget.HorizontalScrollView) cardRow.getParent();
-
-            mainScroller.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                int centerX = mainScroller.getWidth() / 2 + scrollX;
-
-                for (int i = 0; i < cardRow.getChildCount(); i++) {
-                    android.view.View card = cardRow.getChildAt(i);
-                    int cardCenterX = card.getLeft() + card.getWidth() / 2;
-                    int distance = Math.abs(centerX - cardCenterX);
-
-                    // Dynamically scale down items based on screen distance from center
-                    float scale = 1.0f - Math.min(0.15f, (float) distance / mainScroller.getWidth());
-                    
-                    card.setScaleX(scale);
-                    card.setScaleY(scale);
-                    
-                    // Create a smooth alpha fade for off-center tiles
-                    card.setAlpha(0.5f + 0.5f * (scale - 0.85f) / 0.15f); 
-                }
+        // Setup the Account Dashboard Interaction Link
+        int accountBoxId = requireContext().getResources().getIdentifier("account_center_block", "id", requireContext().getPackageName());
+        View accountDock = view.findViewById(accountBoxId);
+        if (accountDock != null) {
+            accountDock.setOnClickListener(v -> {
+                // Instantly redirects to your functional internal account profiles switch layout context
+                Tools.swapFragment(requireActivity(), AccountSelectFragment.class, AccountSelectFragment.TAG, null);
             });
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        
     }
 
     private void openGameDirectory(Context context) {
@@ -129,7 +92,7 @@ public class MainMenuFragment extends Fragment {
         File gameDirectory = instance.getGameDirectory();
         if(FileUtils.ensureDirectorySilently(gameDirectory)) {
             openPath(context, gameDirectory, false);
-        }else {
+        } else {
             Toast.makeText(context, R.string.gamedir_open_failed, Toast.LENGTH_LONG).show();
         }
     }
@@ -143,6 +106,8 @@ public class MainMenuFragment extends Fragment {
     private void runInstallerWithConfirmation() {
         if (ProgressKeeper.getTaskCount() == 0) {
             mModInstallerLauncher.launch(null);
-        } else Toast.makeText(requireContext(), R.string.tasks_ongoing, Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(requireContext(), R.string.tasks_ongoing, Toast.LENGTH_LONG).show();
+        }
     }
 }

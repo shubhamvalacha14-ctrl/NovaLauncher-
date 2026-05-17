@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import net.kdt.pojavlaunch.Tools;
-import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
 
 import java.io.File;
@@ -36,7 +35,7 @@ public class VersionListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Header back navigation button
+        // Header back navigation button click router
         int backBtnId = requireContext().getResources().getIdentifier("btn_back_versions", "id", requireContext().getPackageName());
         View backButton = view.findViewById(backBtnId);
         if (backButton != null) {
@@ -51,14 +50,14 @@ public class VersionListFragment extends Fragment {
             mFinalVersionList.clear();
 
             try {
-                // Scan files directly inside the official minecraft versions game folder
+                // SYSTEM SCANNER ENGINE: Directly opens your launcher game directories storage map
                 File versionsDir = new File(Tools.DIR_GAME_NEW, "versions");
                 if (versionsDir.exists() && versionsDir.isDirectory()) {
                     File[] files = versionsDir.listFiles();
                     if (files != null) {
                         for (File file : files) {
                             if (file.isDirectory()) {
-                                // Extracts everything: Fabric, Forge, OptiFine, Snapshots, Custom Releases
+                                // Dynamically maps Fabric, Forge, OptiFine, Modpacks, Snapshots, and Vanilla profiles
                                 mFinalVersionList.add(file.getName());
                             }
                         }
@@ -68,17 +67,15 @@ public class VersionListFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            // Alpha-sort versions so modern setups group cleanly
+            // Alphabetically sort the instances list to keep mod engines organized
             Collections.sort(mFinalVersionList);
 
-            // True Fallback if the folder scan returned zero results
+            // Safety failback items display if local directory lists are empty
             if (mFinalVersionList.isEmpty()) {
-                mFinalVersionList.add("Release 1.21.1");
-                mFinalVersionList.add("Release 1.20.4");
-                mFinalVersionList.add("Release 1.19.4");
+                mFinalVersionList.add("No versions found! Download Fabric/Forge or Vanilla first.");
             }
 
-            // Bind the scanned live data straight to your stylized row elements
+            // Bind the full folder scan data array to the stylized row layout context template
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1, mFinalVersionList) {
                 @NonNull
                 @Override
@@ -90,7 +87,7 @@ public class VersionListFragment extends Fragment {
                         String name = mFinalVersionList.get(position);
                         text.setText(name);
                         text.setTextColor(android.graphics.Color.WHITE);
-                        text.setTextSize(13f);
+                        text.setTextSize(13f); // Strict float format notation to pass compiler check
                         text.setPadding(32, 40, 32, 40);
                     }
                     
@@ -110,20 +107,15 @@ public class VersionListFragment extends Fragment {
                 String selectedVersion = mFinalVersionList.get(position);
                 
                 try {
-                    // Update global choice selection via Pojav's verified runtime map context safely
-                    ExtraCore.setValue(ExtraConstants.SELECT_VERSION, selectedVersion);
+                    // Saves user selection straight into global runtime configurations using raw strings
+                    ExtraCore.setValue("selected_version", selectedVersion);
                 } catch (Exception e) {
-                    try {
-                        // Secondary string value update path fallback matching custom branches
-                        ExtraCore.setValue("selected_version", selectedVersion);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+                    e.printStackTrace();
                 }
                 
                 try {
-                    // Trigger dynamic interface sync notification to re-render the home menu spinner text label
-                    ExtraCore.setValue(ExtraConstants.REFRESH_ACCOUNT_SPINNER, true);
+                    // Sends global refresh notification signals to repaint structural home screen widgets
+                    ExtraCore.setValue("refresh_version", true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

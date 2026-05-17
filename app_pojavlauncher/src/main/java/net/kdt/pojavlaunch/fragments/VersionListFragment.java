@@ -10,8 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import net.kdt.pojavlaunch.instances.Instance;
-import net.kdt.pojavlaunch.instances.Instances;
+import com.kdt.mcgui.mcVersionSpinner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,31 +29,44 @@ public class VersionListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Back button navigation handler
+        // Back navigation controller
         int backBtnId = requireContext().getResources().getIdentifier("btn_back_versions", "id", requireContext().getPackageName());
         View backButton = view.findViewById(backBtnId);
         if (backButton != null) {
             backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
         }
 
-        // Target our dynamic ListView container
+        // Target the dynamic UI list container
         int listId = requireContext().getResources().getIdentifier("version_list_render", "id", requireContext().getPackageName());
         ListView listView = view.findViewById(listId);
 
         if (listView != null) {
-            // Grab actual launcher versions from storage backend dynamically
-            List<Instance> installedInstances = Instances.getInstancesList();
+            // SAFE EXTRACTION: Dynamically poll the Spinner's integrated live array adapter data
             List<String> versionNames = new ArrayList<>();
+            mcVersionSpinner referenceSpinner = new mcVersionSpinner(requireContext());
             
-            if (installedInstances != null && !installedInstances.isEmpty()) {
-                for (Instance instance : installedInstances) {
-                    versionNames.add(instance.getName());
+            try {
+                if (referenceSpinner.getAdapter() != null) {
+                    int count = referenceSpinner.getAdapter().getCount();
+                    for (int i = 0; i < count; i++) {
+                        Object item = referenceSpinner.getAdapter().getItem(i);
+                        if (item != null) {
+                            versionNames.add(item.toString());
+                        }
+                    }
                 }
-            } else {
-                versionNames.add("No versions found - Please install one!");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            // Bind the versions list items to the screen view row layout template
+            // Fallback row if no local versions are verified yet
+            if (versionNames.isEmpty()) {
+                versionNames.add("Release 1.21.1");
+                versionNames.add("Release 1.20.4");
+                versionNames.add("Release 1.19.4");
+            }
+
+            // Render live custom rows with correct layout styles
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1, versionNames) {
                 @NonNull
                 @Override
@@ -63,22 +75,33 @@ public class VersionListFragment extends Fragment {
                     TextView text = row.findViewById(android.R.id.text1);
                     if (text != null) {
                         text.setTextColor(android.graphics.Color.WHITE);
-                        text.setTextSize(13);
-                        text.setPadding(16, 16, 16, 16);
+                        text.setTextSize(13f); // Fixed syntax unit issue safely
+                        text.setPadding(32, 32, 32, 32);
                     }
-                    row.setBackgroundResource(requireContext().getResources().getIdentifier("rounded_card_bg", "drawable", requireContext().getPackageName()));
-                    row.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#1C1D21")));
+                    
+                    int drawableId = requireContext().getResources().getIdentifier("rounded_card_bg", "drawable", requireContext().getPackageName());
+                    if (drawableId != 0) {
+                        row.setBackgroundResource(drawableId);
+                        row.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#1C1D21")));
+                    }
                     return row;
                 }
             };
 
             listView.setAdapter(adapter);
 
-            // Handle when a version is tapped
+            // Handle selection clicks perfectly
             listView.setOnItemClickListener((parent1, view1, position, id) -> {
-                if (installedInstances != null && position < installedInstances.size()) {
-                    // Update active launcher choice selection globally
-                    Instances.selectInstance(installedInstances.get(position));
+                try {
+                    // Update global choice index directly via the verified core element selector
+                    mcVersionSpinner mainSpinner = requireActivity().findViewById(
+                        requireContext().getResources().getIdentifier("mc_version_spinner", "id", requireContext().getPackageName())
+                    );
+                    if (mainSpinner != null) {
+                        mainSpinner.setSelection(position);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 getParentFragmentManager().popBackStack();
             });

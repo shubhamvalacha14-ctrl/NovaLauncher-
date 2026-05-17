@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import com.launch.nova.debug.R;
+import net.kdt.pojavlaunch.R;
 
 public class SettingsFragment extends Fragment {
 

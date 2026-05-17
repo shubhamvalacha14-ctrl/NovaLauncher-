@@ -66,22 +66,21 @@ public class MainMenuFragment extends Fragment {
                         android.R.anim.fade_in,
                         android.R.anim.fade_out
                     )
-                    .replace(R.id.fragment_menu_main, new VersionListFragment())
+                    .replace(requireContext().getResources().getIdentifier("fragment_menu_main", "id", requireContext().getPackageName()), new VersionListFragment())
                     .addToBackStack(null)
                     .commit();
             });
         }
 
-        // Setup the Account Dashboard Interaction Link
+                // Setup the Account Dashboard Interaction Link
         int accountBoxId = requireContext().getResources().getIdentifier("account_center_block", "id", requireContext().getPackageName());
         View accountDock = view.findViewById(accountBoxId);
-        if (accountDock != null) {
+        if (accountDock != null && mVersionSpinner != null) {
             accountDock.setOnClickListener(v -> {
-                // Instantly redirects to your functional internal account profiles switch layout context
-                Tools.swapFragment(requireActivity(), AccountSelectFragment.class, AccountSelectFragment.TAG, null);
+                // Safely triggers the launcher's built-in account profile editor popup window
+                mVersionSpinner.openProfileEditor(requireActivity());
             });
         }
-    }
 
     private void openGameDirectory(Context context) {
         Instance instance = Instances.loadSelectedInstance();
